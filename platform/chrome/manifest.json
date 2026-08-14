@@ -1,5 +1,5 @@
 {
-  "name": "BlockTube",
+  "name": "ChannelSieve",
   "version": "{EXT_VERSION}",
   "description": "YouTube™ content blocker",
   "manifest_version": 3,
@@ -26,7 +26,7 @@
     }
   ],
   "action": {
-    "default_title": "BlockTube Options",
+    "default_title": "ChannelSieve Options",
     "default_popup": "src/popup/popup.html",
     "default_icon": {
       "16": "assets/icons/16.png",
@@ -42,6 +42,10 @@
     "storage",
     "unlimitedStorage"
   ],
+  "host_permissions": [
+    "https://www.youtube.com/*",
+    "https://m.youtube.com/*"
+  ],
   "background": {
     "service_worker": "src/scripts/background.js"
   },
@@ -50,5 +54,5 @@
     "48": "assets/icons/48.png",
     "128": "assets/icons/128.png"
   },
-  "homepage_url": "https://github.com/amitbl/blocktube"
+  "homepage_url": "https://github.com/825i/channelsieve"
 }

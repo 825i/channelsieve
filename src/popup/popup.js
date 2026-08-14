@@ -70,21 +70,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function refreshPermissionState() {
     if (!chrome.permissions || !chrome.permissions.contains) return;
-    chrome.permissions.contains({ origins: YOUTUBE_ORIGINS }, (granted) => {
-      permissionWarning.hidden = !!granted;
-    });
+    try {
+      chrome.permissions.contains({ origins: YOUTUBE_ORIGINS }, (granted) => {
+        // Only prompt when access is definitively absent. Chrome grants these at install
+        // from host_permissions, so the notice stays hidden there rather than appearing
+        // spuriously on a browser that never had the problem.
+        permissionWarning.hidden = granted !== false;
+      });
+    } catch (e) {
+      permissionWarning.hidden = true;
+    }
   }
 
   refreshPermissionState();
 
   // permissions.request() needs a user gesture, so it has to run from the click handler
   grantButton.addEventListener("click", () => {
-    chrome.permissions.request({ origins: YOUTUBE_ORIGINS }, (granted) => {
-      if (!granted) return;
-      permissionWarning.hidden = true;
-      chrome.tabs.reload(); // content scripts only inject at document_start
-      window.close();
-    });
+    try {
+      chrome.permissions.request({ origins: YOUTUBE_ORIGINS }, (granted) => {
+        if (chrome.runtime.lastError || !granted) return;
+        permissionWarning.hidden = true;
+        chrome.tabs.reload(); // content scripts only inject at document_start
+        window.close();
+      });
+    } catch (e) {
+      // Chrome rejects requests for origins that are not optional. Required host
+      // permissions are already granted there, so there is nothing to recover.
+    }
   });
 
   // Open options page

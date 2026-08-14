@@ -230,7 +230,7 @@
           saveForm();
         }
       } catch (ex) {
-        alert('This is not a valid BlockTube backup');
+        alert('This is not a valid ChannelSieve backup');
       }
     };
     reader.readAsText(f);
@@ -313,7 +313,7 @@
   $('export').addEventListener('click', () => {
     if (isLoggedIn) {
       saveForm();
-      saveFile(storageData, 'blocktube_backup.json');
+      saveFile(storageData, 'channelsieve_backup.json');
     }
   });
 

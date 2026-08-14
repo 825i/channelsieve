@@ -1837,7 +1837,7 @@
     if (storageData === undefined) return;
 
     if (window.btReloadRequired) {
-      window.btExports.openToast("BlockTube was updated, this tab needs to be reloaded to use this function", 5000);
+      window.btExports.openToast("ChannelSieve was updated, this tab needs to be reloaded to use this function", 5000);
       return;
     }
 
@@ -2048,7 +2048,7 @@
     }
 
     if (window.btReloadRequired) {
-      window.btExports.openToast("BlockTube was updated, this tab needs to be reloaded to use this function", 5000);
+      window.btExports.openToast("ChannelSieve was updated, this tab needs to be reloaded to use this function", 5000);
       return;
     }
 
@@ -2075,7 +2075,7 @@
   }
 
   // !! Start
-  console.info('BlockTube Init');
+  console.info('ChannelSieve Init');
 
   const isMobileInterface = document.location.hostname.startsWith('m.');
 
@@ -2091,7 +2091,7 @@
       }
       case 'reloadRequired':
         window.btReloadRequired = true;
-        openToast("BlockTube was updated, Please reload this tab to reactivate it", 15000);
+        openToast("ChannelSieve was updated, Please reload this tab to reactivate it", 15000);
         break;
       default:
         break;

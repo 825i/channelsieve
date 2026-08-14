@@ -22,7 +22,7 @@ update_obj = {
 }
 
 
-addons['addons']['blocktube@git']['updates'].insert(0, update_obj)
+addons['addons']['channelsieve@825i.github.io']['updates'].insert(0, update_obj)
 
 with open('./.updates/ff/updates.json', 'w') as f:
     json.dump(addons, f, indent=2)

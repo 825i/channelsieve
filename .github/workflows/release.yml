@@ -1,4 +1,4 @@
-name: BlockTube release
+name: ChannelSieve release
 
 on:
   push:
@@ -48,8 +48,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/chrome/blocktube_chrome_${{ env.VERSION }}.zip
-          asset_name: blocktube_chrome_${{ env.VERSION }}.zip
+          asset_path: dist/chrome/channelsieve_chrome_${{ env.VERSION }}.zip
+          asset_name: channelsieve_chrome_${{ env.VERSION }}.zip
           asset_content_type: application/octet-stream
       - name: Upload Firefox package
         id: ff_selfhosted_release
@@ -58,15 +58,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/firefox_selfhosted/blocktube_firefox_selfhosted_${{ env.VERSION }}.zip
-          asset_name: blocktube_firefox_selfhosted.xpi
+          asset_path: dist/firefox_selfhosted/channelsieve_firefox_selfhosted_${{ env.VERSION }}.zip
+          asset_name: channelsieve_firefox_selfhosted.xpi
           asset_content_type: application/octet-stream
       - name: Update Firefox self hosted manifest
         run: |
           git checkout master
           ./tools/build_ff_update_manifest.py ${{ env.VERSION }} \
           ${{ steps.ff_selfhosted_release.outputs.browser_download_url }} \
-          $(sha512sum ./dist/firefox_selfhosted/blocktube_firefox_selfhosted_${{ env.VERSION }}.zip | awk '{print "sha512:"$1}')
+          $(sha512sum ./dist/firefox_selfhosted/channelsieve_firefox_selfhosted_${{ env.VERSION }}.zip | awk '{print "sha512:"$1}')
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add .updates/ff/updates.json

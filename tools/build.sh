@@ -67,7 +67,7 @@ set_version() {
 }
 
 zipfile() {
-    ( cd "$DEST" && zip "$DEST/blocktube_${BROWSER}_v${VERSION}.zip" -qr ./* )
+    ( cd "$DEST" && zip "$DEST/channelsieve_${BROWSER}_v${VERSION}.zip" -qr ./* )
 }
 
 clean() {
@@ -101,4 +101,4 @@ clean
 copy_files
 set_version
 zipfile
-echo "Built $DEST/blocktube_${BROWSER}_v${VERSION}.zip"
+echo "Built $DEST/channelsieve_${BROWSER}_v${VERSION}.zip"

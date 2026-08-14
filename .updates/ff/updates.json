@@ -1,73 +1,7 @@
 {
   "addons": {
-    "blocktube@git": {
-      "updates": [
-        {
-          "version": "0.4.8",
-          "update_link": "https://github.com/amitbl/blocktube/releases/download/v0.4.8/blocktube_firefox_selfhosted.xpi",
-          "update_hash": "sha512:0f07a565cfaaf818903411c2043b01805a7836ea79ded1d7a3633bd13fa88f0f152c3fd91bc0cd69a0677cb72cfaed10825c7be695f6ce6d81ffbdc08929a55f"
-        },
-        {
-          "version": "0.4.7",
-          "update_link": "https://github.com/amitbl/blocktube/releases/download/v0.4.7/blocktube_firefox_selfhosted.xpi",
-          "update_hash": "sha512:bf8400108028250eea86845d56a6e18246fe0230ef6339cdaf689ef63e42997d924552cb8bad11db957da269fb36d4555ecc0b31c250f424c3f0bff779b9ae69"
-        },
-        {
-          "version": "0.4.6",
-          "update_link": "https://github.com/amitbl/blocktube/releases/download/v0.4.6/blocktube_firefox_selfhosted.xpi",
-          "update_hash": "sha512:a1b4398c377f5940d0953654809ea7e4769101b3e49c033d537a8d469389945559cfead09eff9cf4b09fef711e4f61569e23886e544111a33d35c88a6307d61b"
-        },
-        {
-          "version": "0.4.5",
-          "update_link": "https://github.com/amitbl/blocktube/releases/download/v0.4.5/blocktube_firefox_selfhosted.xpi",
-          "update_hash": "sha512:34846a17995c552c6b70380495126134d55478941babab0fcaf0f35db22edee2e091a7aa83dc92ec57373c7fa264ff58d468feb28e6a69dd4e0685bde030865d"
-        },
-        {
-          "version": "0.4.4",
-          "update_link": "https://github.com/amitbl/blocktube/releases/download/v0.4.4/blocktube_firefox_selfhosted.xpi",
-          "update_hash": "sha512:59ec48145906a875c1c32c9e6e5e5ece289f9cf78b71a51b4dbb47390667ebe87e6d67e7f0355400e8141d19a22c85601491f6652e5b25f879bc448f29cdc365"
-        },
-        {
-          "version": "0.4.3",
-          "update_link": "https://github.com/amitbl/blocktube/releases/download/v0.4.3/blocktube_firefox_selfhosted.xpi",
-          "update_hash": "sha512:0d39c34371faece4a19b5a66b2cc524240f6b90ec11043506c62979c98b1c2227621140d32106463d21130eb8cc0a5964e89d1ec842b1b84cd93d9d5b44fb10b"
-        },
-        {
-          "version": "0.4.2",
-          "update_link": "https://github.com/amitbl/blocktube/releases/download/v0.4.2/blocktube_firefox_selfhosted.xpi",
-          "update_hash": "sha512:d1b494d1ab44e753cd3886ab8e024833ccc086e8e676859db3dec60b552a225c906406987f06b7c26833668da0a204b9777145938abd028cb35f79e5c9e8be51"
-        },
-        {
-          "version": "0.4.1",
-          "update_link": "https://github.com/amitbl/blocktube/releases/download/v0.4.1/blocktube_firefox_selfhosted.xpi",
-          "update_hash": "sha512:2f0755d1873e2a44a2825acf39e57aa55bf2c9d30a7c523519fbf9b4fb344e50bd7cbba7dee495a85ad83e418292f1bd0bc876ae43703ffd1770e17f78e87328"
-        },
-        {
-          "version": "0.4.0",
-          "update_link": "https://github.com/amitbl/blocktube/releases/download/v0.4.0/blocktube_firefox_selfhosted.xpi",
-          "update_hash": "sha512:ec7c13f709b9afd38fc85526d6f635706a3078e14e1823688c918b23ba6b76968bc39c231187fded6d7acf2a06ce9ad49afa7e211e5ebececc6494366fdb79b9"
-        },
-        {
-          "version": "0.3.38",
-          "update_link": "https://github.com/amitbl/blocktube/releases/download/v0.3.38/blocktube_firefox_selfhosted.xpi",
-          "update_hash": "sha512:7f5bd3b476b265c753b1aee97be52f0977274eea633eae23ba450003d699e1de0b8330a3e35ee3f5788f2449a342324a29f94d73649107103b17a284cfd6451b"
-        },
-        {
-          "version": "0.3.37",
-          "update_link": "https://github.com/amitbl/blocktube/releases/download/v0.3.37/blocktube_firefox_selfhosted.xpi",
-          "update_hash": "sha512:ebaef584f3235b626f03ee7f0afdb1fb2d03062fd4b949b7ecf371b2d753b5a168f5a1e4e2a7083223272fcad47ffa66abda9759771a7622c04dc97c14b29068"
-        },
-        {
-          "version": "0.3.36",
-          "update_link": "https://github.com/amitbl/blocktube/releases/download/v0.3.36/blocktube_firefox_selfhosted.xpi",
-          "update_hash": "sha512:ecfbec5ba9725d377612ee15dbcddf1f381bcd651826ed08a03875b626202b2070c9f40fdbc8e9753e378f5c9e52267d06e7a16792f684a5e0f8d93780e0f7ee"
-        },
-        {
-          "version": "0.3.35",
-          "update_link": "https://github.com/amitbl/blocktube/releases/download/v0.3.35/blocktube_firefox_selfhosted.xpi",
-          "update_hash": "sha512:91e0ce1cd6698e0a6a5e2fdf142c6c1b9455d4e3eb1670d296d9a3880f1df3fd99b00914c4ed73ee29d822668e2a74eec43c10c977941715613efbd80934fa81"
-        }
-      ]
+    "channelsieve@825i.github.io": {
+      "updates": []
     }
   }
 }

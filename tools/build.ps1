@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Builds a BlockTube extension package on Windows.
+    Builds a ChannelSieve extension package on Windows.
 
 .DESCRIPTION
     A Windows-native equivalent of tools/build.sh. Windows has no `zip` binary and this
@@ -81,7 +81,7 @@ if ($remaining) {
 # [ZipFile]::CreateFromDirectory or Compress-Archive: on Windows PowerShell 5.1 both write
 # the OS separator into entry names, producing "src\scripts\background.js". The ZIP format
 # requires forward slashes, and Firefox cannot resolve the manifest's paths without them.
-$xpi = Join-Path $DistRoot "blocktube_${Browser}_v${Version}.xpi"
+$xpi = Join-Path $DistRoot "channelsieve_${Browser}_v${Version}.xpi"
 if (Test-Path $xpi) { Remove-Item -LiteralPath $xpi -Force }
 
 # Both assemblies are needed: ZipFile lives in .FileSystem, ZipArchive/ZipArchiveMode in

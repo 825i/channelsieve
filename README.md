@@ -1,4 +1,4 @@
-# BlockTube
+# ChannelSieve
 
 WebExtension for Chrome and Firefox.  
 Filter and block unwanted content from YouTube™.
@@ -18,28 +18,28 @@ Filter and block unwanted content from YouTube™.
 
 ## Installed but nothing happens? (Firefox)
 
-If BlockTube shows as installed in Firefox but has no toolbar icon, no settings, and no
+If ChannelSieve shows as installed in Firefox but has no toolbar icon, no settings, and no
 "Block Channel" / "Block Video" entries in YouTube's three-dot menu, neither the extension nor
 YouTube is broken. Two things are going on, and both are one-time fixes:
 
 **1. It has no permission to touch YouTube.** In Manifest V3, Firefox treats host permissions as
-user-controlled, and they are not always granted at install. BlockTube works entirely through
+user-controlled, and they are not always granted at install. ChannelSieve works entirely through
 content scripts, so with no host access nothing injects and it silently does nothing.
 
-* `about:addons` → **Extensions** → BlockTube → **Permissions** → enable access for
+* `about:addons` → **Extensions** → ChannelSieve → **Permissions** → enable access for
   `www.youtube.com` and `m.youtube.com`, **or**
-* the Extensions (puzzle-piece) button → BlockTube → gear → *Always Allow on www.youtube.com*, **or**
-* open the BlockTube popup — this fork adds a **Grant access to YouTube** button that appears
+* the Extensions (puzzle-piece) button → ChannelSieve → gear → *Always Allow on www.youtube.com*, **or**
+* open the ChannelSieve popup — this fork adds a **Grant access to YouTube** button that appears
   whenever the permission is missing.
 
 Then reload any open YouTube tab; content scripts only inject at `document_start`.
 
 **2. The toolbar icon is in the puzzle-piece panel.** Firefox does not auto-place Manifest V3
 action buttons on the toolbar. Click the Extensions (puzzle-piece) button, then right-click
-BlockTube → **Pin to Toolbar**. Settings are also always reachable from
-`about:addons` → BlockTube → **Preferences**.
+ChannelSieve → **Pin to Toolbar**. Settings are also always reachable from
+`about:addons` → ChannelSieve → **Preferences**.
 
-To confirm it is running, open a YouTube tab and look for `BlockTube Init` in the web console.
+To confirm it is running, open a YouTube tab and look for `ChannelSieve Init` in the web console.
 
 ## Extension features
 
@@ -57,8 +57,16 @@ To confirm it is running, open a YouTube tab and look for `BlockTube Init` in th
 
 ## Install
 
-* [**Chrome Webstore**](https://chrome.google.com/webstore/detail/blocktube/bbeaicapbccfllodepmimpkgecanonai?hl=en-US)
-* [**Firefox AMO**](https://addons.mozilla.org/en-US/firefox/addon/blocktube/)
+* **Firefox** — download the signed `.xpi` from
+  [Releases](https://github.com/825i/channelsieve/releases). It is self-distributed and signed by
+  Mozilla, so it installs normally with no changes to your browser's security settings.
+* **Chrome** — not published to the Web Store. Build it with
+  `.\tools\build.ps1 -Browser chrome` (or `./tools/build.sh chrome`) and
+  [load it unpacked](https://developer.chrome.com/docs/extensions/mv3/getstarted/development-basics/#load-unpacked).
+
+Upstream BlockTube, which this is forked from, is published at the
+[Chrome Web Store](https://chrome.google.com/webstore/detail/blocktube/bbeaicapbccfllodepmimpkgecanonai)
+and [Firefox AMO](https://addons.mozilla.org/en-US/firefox/addon/blocktube/).
 
 ## FAQ
   
@@ -95,8 +103,8 @@ the sources, substitutes the version placeholder, and zips the result.
 
 *Linux / macOS* (needs `bash` and `zip`)
 ```
-git clone https://github.com/825i/blocktube
-cd blocktube
+git clone https://github.com/825i/channelsieve
+cd channelsieve
 
 ### Make your changes ###
 
@@ -104,20 +112,20 @@ cd blocktube
 ./tools/build.sh chrome
 
 # Output
-./dist/firefox/blocktube_firefox_v<VERSION>.zip
-./dist/chrome/blocktube_chrome_v<VERSION>.zip
+./dist/firefox/channelsieve_firefox_v<VERSION>.zip
+./dist/chrome/channelsieve_chrome_v<VERSION>.zip
 ```
 
 *Windows* (PowerShell; added in this fork, since Windows has no `zip` binary)
 ```
-git clone https://github.com/825i/blocktube
-cd blocktube
+git clone https://github.com/825i/channelsieve
+cd channelsieve
 
 .\tools\build.ps1 -Browser firefox
 .\tools\build.ps1 -Browser chrome
 
 # Output — a ready-to-load .xpi plus the unpacked directory
-.\dist\blocktube_firefox_v<VERSION>.xpi
+.\dist\channelsieve_firefox_v<VERSION>.xpi
 .\dist\firefox\
 ```
 Pass `-Force` to replace an existing build directory; without it the script refuses rather than
