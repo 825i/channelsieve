@@ -57,7 +57,10 @@
   "browser_specific_settings": {
     "gecko": {
         "id": "channelsieve@825i.github.io",
-        "strict_min_version": "128.0"
+        "strict_min_version": "128.0",
+        "data_collection_permissions": {
+            "required": ["none"]
+        }
     }
   },
   "homepage_url": "https://github.com/825i/channelsieve"
