@@ -3,6 +3,44 @@
 WebExtension for Chrome and Firefox.  
 Filter and block unwanted content from YouTube™.
 
+> ### About this fork
+>
+> This is a maintenance fork of [amitbl/blocktube](https://github.com/amitbl/blocktube), whose last
+> release was v0.4.8 (7 Feb 2026). It fixes the Firefox Manifest V3 problem that makes the extension
+> install successfully and then do nothing at all, and it removes a destructive bug in the build
+> script. See [CHANGES-FORK.md](CHANGES-FORK.md) for the full list.
+>
+> **:warning: If you cloned the upstream repo, do not run its `tools/build.sh`.** In upstream it
+> deletes an unintended directory when the repository path contains a space — see
+> [Security note](#security-note-upstream-toolsbuildsh) below.
+>
+> The blocking engine itself is unchanged and still works against current YouTube.
+
+## Installed but nothing happens? (Firefox)
+
+If BlockTube shows as installed in Firefox but has no toolbar icon, no settings, and no
+"Block Channel" / "Block Video" entries in YouTube's three-dot menu, neither the extension nor
+YouTube is broken. Two things are going on, and both are one-time fixes:
+
+**1. It has no permission to touch YouTube.** In Manifest V3, Firefox treats host permissions as
+user-controlled, and they are not always granted at install. BlockTube works entirely through
+content scripts, so with no host access nothing injects and it silently does nothing.
+
+* `about:addons` → **Extensions** → BlockTube → **Permissions** → enable access for
+  `www.youtube.com` and `m.youtube.com`, **or**
+* the Extensions (puzzle-piece) button → BlockTube → gear → *Always Allow on www.youtube.com*, **or**
+* open the BlockTube popup — this fork adds a **Grant access to YouTube** button that appears
+  whenever the permission is missing.
+
+Then reload any open YouTube tab; content scripts only inject at `document_start`.
+
+**2. The toolbar icon is in the puzzle-piece panel.** Firefox does not auto-place Manifest V3
+action buttons on the toolbar. Click the Extensions (puzzle-piece) button, then right-click
+BlockTube → **Pin to Toolbar**. Settings are also always reachable from
+`about:addons` → BlockTube → **Preferences**.
+
+To confirm it is running, open a YouTube tab and look for `BlockTube Init` in the web console.
+
 ## Extension features
 
 * Block videos via: **Video Title** / **Channel Name** / **Channel ID** / **Video ID**
@@ -52,29 +90,75 @@ Filter and block unwanted content from YouTube™.
 
 ## Development & Build
 
-*Ubuntu*
-```
-# Install build requirements
-sudo apt install nodejs npm
-sudo npm install -g terser
+There is no build toolchain to install — the extension is plain JavaScript. Building only copies
+the sources, substitutes the version placeholder, and zips the result.
 
-# Clone Repo
-git clone https://github.com/amitbl/blocktube
+*Linux / macOS* (needs `bash` and `zip`)
+```
+git clone https://github.com/825i/blocktube
+cd blocktube
 
 ### Make your changes ###
 
-# Build package
 ./tools/build.sh firefox
 ./tools/build.sh chrome
 
-# Output packages locations
-./dist/firefox/blocktube_firefox_VERSION.zip
-./dist/chrome/blocktube_chrome_VERSION.zip
-
-# Temporary installation / debugging
-Firefox: https://extensionworkshop.com/documentation/develop/temporary-installation-in-firefox/
-Chrome: https://developer.chrome.com/docs/extensions/mv3/getstarted/development-basics/#load-unpacked
+# Output
+./dist/firefox/blocktube_firefox_v<VERSION>.zip
+./dist/chrome/blocktube_chrome_v<VERSION>.zip
 ```
+
+*Windows* (PowerShell; added in this fork, since Windows has no `zip` binary)
+```
+git clone https://github.com/825i/blocktube
+cd blocktube
+
+.\tools\build.ps1 -Browser firefox
+.\tools\build.ps1 -Browser chrome
+
+# Output — a ready-to-load .xpi plus the unpacked directory
+.\dist\blocktube_firefox_v<VERSION>.xpi
+.\dist\firefox\
+```
+Pass `-Force` to replace an existing build directory; without it the script refuses rather than
+deleting anything. It writes only inside `dist\`.
+
+*Temporary installation / debugging*
+
+* Firefox: `about:debugging#/runtime/this-firefox` → **Load Temporary Add-on** → pick the `.xpi`
+  or the unpacked `manifest.json`.
+  ([docs](https://extensionworkshop.com/documentation/develop/temporary-installation-in-firefox/))
+* Chrome: [load unpacked](https://developer.chrome.com/docs/extensions/mv3/getstarted/development-basics/#load-unpacked)
+
+Note that a temporary add-on is removed when the browser restarts, and its stored blocklist does not
+persist — export your filters first. Installing a modified build permanently in release Firefox
+requires an AMO signature.
+
+### Security note: upstream `tools/build.sh`
+
+Upstream's build script could destroy data. It computed its own location with unquoted expansions
+and then deleted with an unquoted variable:
+
+```bash
+BASEDIR=$(dirname $(dirname $SCRIPT))   # $SCRIPT unquoted
+clean() { rm -rf $DEST; }               # $DEST unquoted
+```
+
+If the repository path contained a space, `$SCRIPT` word-split into two arguments, `dirname`
+received two operands and printed two lines, and `$DEST` became two paths. `build()` calls `clean()`
+first, so `rm -rf $DEST` split again and deleted an unintended directory. For a checkout under
+`C:\Users\<you>\Documents\Claude Desktop\blocktube` it resolved to:
+
+```
+rm -rf /c/Users/<you>  Desktop/blocktube/dist/firefox
+```
+
+— removing the entire home directory. Running the script with no arguments also reached `clean()`
+with `$DEST` unset.
+
+This fork quotes every expansion, adds `set -euo pipefail`, sets `DEST` before any `clean`, requires
+an explicit subcommand, and refuses to delete anything that is not a build directory under
+`$BASEDIR/dist`.
 
 ## Future work
 

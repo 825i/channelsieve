@@ -5,6 +5,8 @@
   --link-color: #06c;
   --toggle-bg: #ccc;
   --toggle-checked-bg: #06c;
+  --warning-bg: #fff4e5;
+  --warning-border: #f0b37e;
 }
 
 [data-theme="dark"] {
@@ -14,6 +16,8 @@
   --link-color: #06c;
   --toggle-bg: #555;
   --toggle-checked-bg: #06c;
+  --warning-bg: #3a2f22;
+  --warning-border: #8a6d3b;
 }
 
 body {
@@ -103,4 +107,29 @@ input:checked + .slider:before {
 
 .options-button:hover {
   background-color: #005bb5; /* darker blue on hover */
+}
+
+/* Shown only when the YouTube host permission has not been granted */
+.permission-warning {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 240px;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid var(--warning-border);
+  border-radius: 4px;
+  background-color: var(--warning-bg);
+}
+
+.permission-warning[hidden] {
+  display: none;
+}
+
+.permission-text {
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--text-color);
 }

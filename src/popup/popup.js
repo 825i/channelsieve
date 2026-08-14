@@ -1,5 +1,8 @@
 let enabled = true;
 
+// Must stay in sync with host_permissions / content_scripts.matches in the manifests.
+const YOUTUBE_ORIGINS = ['https://www.youtube.com/*', 'https://m.youtube.com/*'];
+
 document.addEventListener('DOMContentLoaded', () => {
 
   function detectColorScheme() {
@@ -57,6 +60,31 @@ document.addEventListener('DOMContentLoaded', () => {
         chrome.storage.local.set({enabled: !!event.target.checked});
         chrome.tabs.reload(); // Reload page to apply the new state
     }
+  });
+
+  // On Firefox MV3 the YouTube host permission is optional and is not always granted at
+  // install time. Until it is, the content scripts never inject and the extension does
+  // nothing at all with no visible sign of why, so surface it and offer a one-click fix.
+  const permissionWarning = document.getElementById("permission-warning");
+  const grantButton = document.getElementById("grant-button");
+
+  function refreshPermissionState() {
+    if (!chrome.permissions || !chrome.permissions.contains) return;
+    chrome.permissions.contains({ origins: YOUTUBE_ORIGINS }, (granted) => {
+      permissionWarning.hidden = !!granted;
+    });
+  }
+
+  refreshPermissionState();
+
+  // permissions.request() needs a user gesture, so it has to run from the click handler
+  grantButton.addEventListener("click", () => {
+    chrome.permissions.request({ origins: YOUTUBE_ORIGINS }, (granted) => {
+      if (!granted) return;
+      permissionWarning.hidden = true;
+      chrome.tabs.reload(); // content scripts only inject at document_start
+      window.close();
+    });
   });
 
   // Open options page

@@ -1,0 +1,119 @@
+# Changes in this fork
+
+This is a modified version of [amitbl/blocktube](https://github.com/amitbl/blocktube).
+Forked from upstream commit `d8a1bdb` (v0.4.8, 7 Feb 2026).
+
+As required by the GPLv3, this file states the changes made relative to upstream. The extension
+remains licensed under the GPLv3 — see [LICENSE](LICENSE).
+
+---
+
+## 2026-08-14 — Firefox MV3 fixes and build script hardening
+
+### Fixed: the extension installed on Firefox but did nothing
+
+Symptoms were no toolbar icon, no reachable settings, and no "Block Channel" / "Block Video" items
+in YouTube's three-dot menu.
+
+The cause was not the blocking engine — every YouTube hook the extension relies on
+(`ytd-menu-service-item-renderer`, `yt-list-item-view-model`, `Polymer`,
+`yt.player.Application`, `videoRenderer`, `itemSectionRenderer`, `shortsLockupViewModel`,
+`reelShelfRenderer`, `menuServiceItemRenderer`) was verified still present on live YouTube in
+August 2026.
+
+The cause was Manifest V3 host permissions. Upstream's v0.4.4 migration
+(commit `f190fa7`, Sept 2024) switched the Firefox manifests to MV3 but never added a
+`host_permissions` key, relying on `content_scripts.matches` alone. Firefox treats MV3 host
+permissions as user-controlled, so YouTube access could end up requested-but-never-granted. Because
+BlockTube works exclusively through declarative content scripts, and because nothing in the codebase
+ever called `permissions.request()`, the result was total silent inertness — with no error, no
+prompt, and no way for the user to discover the cause.
+
+* **`platform/firefox/manifest.json`, `platform/firefox_selfhosted/manifest.json`** — added an
+  explicit `host_permissions` entry for `https://www.youtube.com/*` and `https://m.youtube.com/*`,
+  so Firefox 127+ shows the permission in the install prompt and grants it on installation.
+* **`platform/firefox/manifest.json`, `platform/firefox_selfhosted/manifest.json`** — added
+  `browser_specific_settings.gecko.strict_min_version: "128.0"`. The manifests already used
+  `content_scripts` with `"world": "MAIN"`, which requires Firefox 128; without a minimum version an
+  older Firefox would silently ignore it and inject `seed.js` and `inject.js` into the wrong world.
+* **`src/popup/popup.js`, `src/popup/popup.html`, `src/popup/popup.css`** — the popup now checks
+  `permissions.contains()` on open and, when YouTube access is missing, shows a
+  **Grant access to YouTube** button that calls `permissions.request()` from the click handler
+  (a user gesture is required). This turns an invisible failure into a one-click fix.
+
+### Fixed: filters could stop applying after the background context slept
+
+`src/scripts/background.js` registered `runtime.onConnect` and `storage.onChanged` *inside* the
+async `storage.local.get` callback. An MV3 background context is a non-persistent event page: it is
+torn down when idle and restarted by an incoming event, so listeners must be registered
+synchronously at the top level. Otherwise a content script's `runtime.connect()` can arrive before
+`addListener` has run and be dropped, leaving that tab unfiltered until reload.
+(Upstream issue [#679](https://github.com/amitbl/blocktube/issues/679).)
+
+Listener registration was moved to the top level, with the storage read awaited inside the handlers
+via a promise.
+
+### Fixed: a stored `enabled` flag with no `storageData` broke startup
+
+Also in `src/scripts/background.js`. The startup path tested
+`Object.keys(data).length > 0` before assigning `storage = data.storageData`. The popup's on/off
+toggle writes `enabled` on its own, so a profile could hold `enabled` without `storageData` — in
+which case `storage` was set to `undefined` and `compileAll()` threw, aborting the whole startup
+path and taking the listener registration down with it. The check now tests for `data.storageData`
+specifically, leaving the defaults in place when it is absent.
+
+### Fixed: `tools/build.sh` could delete the user's home directory
+
+Upstream's build script computed its own location with unquoted expansions and deleted with an
+unquoted variable:
+
+```bash
+BASEDIR=$(dirname $(dirname $SCRIPT))   # $SCRIPT unquoted
+clean() { rm -rf $DEST; }               # $DEST unquoted
+```
+
+With a space anywhere in the repository path, `$SCRIPT` word-split into two arguments, `dirname`
+received two operands and printed two lines, and `$DEST` became two separate paths. Since `build()`
+calls `clean()` first, `rm -rf $DEST` split again and deleted an unintended directory. For a
+checkout under `C:\Users\<you>\Documents\Claude Desktop\blocktube` this resolved to
+`rm -rf /c/Users/<you>  Desktop/blocktube/dist/firefox`, destroying the home directory. Invoking the
+script with no arguments also fell through to `clean()` with `$DEST` unset.
+
+The script now uses `set -euo pipefail`, quotes every expansion, sets `DEST` before any `clean` call,
+requires an explicit subcommand instead of silently cleaning, and refuses via `assert_safe_dest()`
+to touch any path that is not a build directory under `$BASEDIR/dist`.
+
+### Added: `tools/build.ps1`
+
+A Windows-native build script, since Windows ships no `zip` binary and the project needs no Node
+toolchain. It produces both an unpacked directory and a loadable `.xpi`. It writes only inside
+`dist\`, and never deletes without an explicit `-Force`.
+
+Two Windows-specific pitfalls are handled: the version placeholder is written as UTF-8 **without** a
+BOM (Windows PowerShell's `-Encoding utf8` adds one, and a BOM in `manifest.json` makes Firefox
+reject it), and zip entries are added individually so their names use forward slashes
+(`ZipFile.CreateFromDirectory` and `Compress-Archive` both emit `src\scripts\background.js` on
+PowerShell 5.1, which Firefox cannot resolve).
+
+### Changed: self-hosted update URL
+
+`platform/firefox_selfhosted/manifest.json` — `update_url` now points at this fork rather than
+upstream, so a self-hosted install cannot silently update itself back to an unpatched build. No
+signed releases are published from this fork yet, so self-hosted auto-update is inert.
+
+### Documentation
+
+`README.md` — added a fork notice, a troubleshooting section for "installed but nothing happens" on
+Firefox, Windows build instructions, and a security note describing the `build.sh` bug above.
+
+---
+
+## Not changed
+
+* The blocking and filtering engine (`src/scripts/inject.js`, `seed.js`, `content_script.js`) is
+  entirely untouched — it still matches current YouTube, so no changes were needed.
+* `platform/chrome/manifest.json` is unchanged; the bug was Firefox-specific.
+* `platform/firefox/manifest.json` still carries upstream's AMO extension ID, as it is upstream's
+  submission manifest. Only upstream can publish under that ID.
+* `.github/workflows/release.yml` is unchanged and no tags are pushed from this fork. Note that it
+  triggers on `v*` tags and pushes back to `master`; review it before tagging a release here.

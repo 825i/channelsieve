@@ -42,6 +42,10 @@
     "storage",
     "unlimitedStorage"
   ],
+  "host_permissions": [
+    "https://www.youtube.com/*",
+    "https://m.youtube.com/*"
+  ],
   "background": {
     "scripts": ["src/scripts/background.js"]
   },
@@ -52,7 +56,8 @@
   },
   "browser_specific_settings": {
     "gecko": {
-        "id": "{58204f8b-01c2-4bbc-98f8-9a90458fd9ef}"
+        "id": "{58204f8b-01c2-4bbc-98f8-9a90458fd9ef}",
+        "strict_min_version": "128.0"
     }
   },
   "homepage_url": "https://github.com/amitbl/blocktube"
