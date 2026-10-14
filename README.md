@@ -1,5 +1,7 @@
 <img src="assets/icons/128.png" width="96" align="right" alt="ChannelSieve icon">
 
+
+
 # ChannelSieve
 
 Block unwanted channels, videos and comments on YouTube — before they ever render.
@@ -14,7 +16,7 @@ Firefox and Chrome. See [CHANGES-FORK.md](CHANGES-FORK.md) for what changed and 
 
 ## Install
 
-**Firefox** — download the signed `.xpi` from the
+**Firefox** — Get it from the [Firefox addon store](https://addons.mozilla.org/en-US/firefox/addon/channelsieve/), or download the signed `.xpi` from the
 [Releases page](https://github.com/825i/channelsieve/releases) and open it in Firefox. It is signed
 by Mozilla, so it installs normally with no changes to your browser settings.
 
